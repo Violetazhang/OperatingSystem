@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E863DB5E-B5B3-34FA-9D46-F003700202E7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>lab3</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lab3.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lab3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lab3.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lab3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">lab3.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">lab3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">lab3.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">lab3</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/Debug/lab3.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/Debug/lab3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/Release/lab3.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/Release/lab3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/MinSizeRel/lab3.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/MinSizeRel/lab3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\.;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/RelWithDebInfo/lab3.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/RelWithDebInfo/lab3.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3 -BD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build --check-stamp-file D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeRCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3 -BD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build --check-stamp-file D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeRCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3 -BD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build --check-stamp-file D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeRCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/lab3 -BD:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build --check-stamp-file D:/Users/win10/Desktop/university/操作系统/riscv64-ucore-labcodes/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeGenericSystem.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeLanguageInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeRCInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Compiler\MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\Windows.cmake;C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\share\cmake-3.24\Modules\Platform\WindowsPaths.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeRCCompiler.cmake;D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\3.24.202208181-MSVC_2\CMakeSystem.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\assert.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kdebug.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kdebug.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kmonitor.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kmonitor.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\panic.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\stab.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\clock.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\clock.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\console.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\console.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\ide.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\ide.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\intr.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\intr.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\fs.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\swapfs.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\swapfs.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init\init.c" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs\stdio.c" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\default_pmm.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\default_pmm.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\memlayout.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\mmu.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\pmm.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\pmm.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_clock.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_clock.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_fifo.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_fifo.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\vmm.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\vmm.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync\sync.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap\trap.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap\trap.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\atomic.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\defs.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\error.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\list.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\printfmt.c" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\rand.c" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\readline.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\riscv.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\sbi.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdarg.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdio.h" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdlib.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\string.c" />
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\string.h" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools\sign.c" />
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools\vector.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\build\ZERO_CHECK.vcxproj">
+      <Project>{02F2135C-87EF-3EBC-9266-DD20E0EF5787}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

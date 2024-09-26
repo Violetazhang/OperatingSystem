@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kdebug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kmonitor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\panic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\clock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\console.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\ide.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\intr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\swapfs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\init\init.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\libs\stdio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\default_pmm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\pmm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_clock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_fifo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\vmm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap\trap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\printfmt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\rand.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\readline.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\string.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools\sign.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\tools\vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\assert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kdebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\kmonitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\debug\stab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\clock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\ide.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\driver\intr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\fs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\fs\swapfs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\default_pmm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\memlayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\mmu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\pmm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_clock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\swap_fifo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\mm\vmm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\sync\sync.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\kern\trap\trap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\atomic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\defs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\riscv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\sbi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdarg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\libs\string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Users\win10\Desktop\university\操作系统\riscv64-ucore-labcodes\lab3\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0D9ACF55-71B1-3FF4-A09A-1A92831BD683}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{13EEC619-A075-3C0F-8F23-BCBCDCD69AE5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
