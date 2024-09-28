@@ -80,7 +80,7 @@ void interrupt_handler(struct trapframe *tf) {
 
 使用`make qemu`命令运行系统，得到如下结果：
 
-![运行结果](make qemu.png)
+![运行结果](lab1.asserts/qemu.png)
 
 运行后看到每隔1秒便会输出一次”100 ticks”，共输出10行。
 
@@ -236,5 +236,5 @@ void exception_handler(struct trapframe *tf) {
 
 ​	执行`make grade`命令，对代码进行评估。评估Score 100/100，验证了上述代码的正确性。
 
-![评估结果](make grade.png)
+![评估结果](lab1.asserts/grade.png)
 
