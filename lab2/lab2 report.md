@@ -4,7 +4,7 @@
 
 #### 1.`default_init`函数
 
-```c++
+```c
 static void
 default_init(void) {
     list_init(&free_list);
@@ -19,7 +19,7 @@ default_init(void) {
 
 #### 2.`default_init_memmap`函数
 
-```c++
+```c
 static void
 default_init_memmap(struct Page *base, size_t n) {
     assert(n > 0);
@@ -66,7 +66,7 @@ default_init_memmap(struct Page *base, size_t n) {
 
 #### 3.`default_alloc_pages`函数
 
-```c++
+```c
 static struct Page *
 default_alloc_pages(size_t n) {
     assert(n > 0);
@@ -111,7 +111,7 @@ default_alloc_pages(size_t n) {
 
 #### 4.`default_free_pages`函数
 
-```c++
+```c
 static void
 default_free_pages(struct Page *base, size_t n) {
     assert(n > 0);
@@ -186,6 +186,89 @@ default_free_pages(struct Page *base, size_t n) {
 #### 6. first fit算法是否有进一步的改进空间？
 
 `default_init_memmap`函数和`default_free_pages`函数都有插入页的操作，在用双向链表存储空闲链表的情况下遍历它寻找插入位置，其时间复杂度是`O(n)`，可以改用平衡二叉搜索树来存储，这样时间复杂度能降到`O(logn)`。
+
+
+
+## 练习2：实现 Best-Fit 连续物理内存分配算法
+
+Best-Fit 的核心原则是：在空闲内存块链表中，找到最小的足够大的空闲内存块进行分配，目的是尽量减少分配后的剩余内存碎片。不同分配算法的区别主要体现在分配和释放内存时的策略不同，因此，Best-Fit只需要在First-Fit算法的基础上进行一些修改。
+
+### Best-Fit算法的实现
+
+#### 1.`best_fit_init_memmap`函数
+
+内存初始化的过程与具体的分配算法无关，`init_memmap` 的功能是将一段连续的物理内存初始化为“可用”状态，即标记这些页为可分配的内存。进行的工作如：清空当前页框的标志和属性信息、将页框的引用计数设置为0、将页块加入空闲链表等，这些并不涉及内存分配策略，无论是First-Fit还是Best-Fit都是一样的。代码中的空缺仿照` default_init_memmap`函数填即可。
+
+#### 2.`best_fit_alloc_pages`函数
+
+**遍历空闲链表寻找最佳匹配**：
+在First Fit算法中，代码会找到第一个满足大小需求的空闲页块并返回。而在Best Fit算法中，遍历链表时，除了判断页块的大小是否满足需求，还需要记录当前最小的空闲页块。
+
+```c
+while ((le = list_next(le)) != &free_list) {
+        struct Page *p = le2page(le, page_link);
+        if (p->property >= n) { // 找到大小 >= n 的块
+            if (p->property < min_size) { // Best Fit: 记录当前找到的最小块
+                min_size = p->property;
+                page = p;
+                if (min_size == n) { // 如果找到恰好合适的块，立即退出
+                    break;
+                }
+            }
+        }
+    }
+```
+
+- 在 Best-Fit 中引入一个 `min_size` 变量，用于记录找到的最小合适块的大小。`min_size` 初始值设为一个较大的数（ `nr_free + 1`），确保第一次找到的块会更新为最小值。
+
+- 每次找到一个大小符合要求的块后，会判断其大小是否比当前记录的最小块小。如果是，则更新最小块和 `min_size`。如果找到一个恰好满足需求的块（`min_size == n`），就可以提前退出循环，因为这是最优选择。
+
+- 在 First Fit 中，找到第一个满足需求的块就可以立即分配，而 Best Fit 要继续遍历整个链表，直到找到最小的满足条件的块。
+
+#### 3.`best_fit_free_pages`函数
+
+在 `best_fit_free_pages` 中，内存释放时逻辑与 First-Fit 基本相同。释放过程中，同样会尝试合并相邻的空闲块，避免产生内存碎片。代码中需要的填空方法同样仿照`default_free_pages`即可。
+
+### 物理内存的分配和释放
+
+#### 分配过程：
+
+1. **初始化**：
+   在`best_fit_init_memmap`函数中，将一段内存标记为空闲。代码初始化每个页面的属性和引用计数，设置最初的空闲页块大小，并插入空闲链表。
+
+2. **分配内存**：
+   在`best_fit_alloc_pages`函数中，遍历空闲链表，找到最适合的页块（即刚好比所需大小稍大的块），并进行分配。如果找到的空闲块比需求大，分割空闲块。更新链表，减少`nr_free`的空闲页数。
+
+#### 释放过程：
+
+1. **释放内存**：
+   在`best_fit_free_pages`函数中，释放指定的页面块，并将其重新插入到空闲链表中。
+
+2. **合并空闲块**：
+   如果释放的页面块与相邻的空闲块连续，将这些块合并为一个更大的块，以减少碎片化并提高内存利用率。
+
+### 改进空间
+
+Best-Fit 虽然比 First-Fit 更高效地利用了内存，但它可能会导致较小的碎片散落在内存中，尤其是随着更多的小块被分配后，内存空间会逐渐变得零散，难以容纳较大的分配请求。
+
+#### 改进方案：
+
+- **设定最小分割阈值**：当分割块时，如果剩余的块大小过小（如小于一定的最小阈值），则不再分割它。这样可以避免产生许多小块碎片。具体代码可以类似于：
+
+  ```c
+  if (page->property > n && page->property - n >= MIN_BLOCK_SIZE) {
+      struct Page *p = page + n;
+      p->property = page->property - n;
+      SetPageProperty(p);
+      list_add(prev, &(p->page_link));
+  }
+  ```
+
+  这里的 `MIN_BLOCK_SIZE` 可以设置为系统中的一个合理阈值，如 4KB 或 8KB，确保在分割时不会产生太小的碎片块。
+
+- **碎片合并**：为了进一步优化，可以定期对空闲块进行整理，即主动合并一些较小的空闲块，形成较大的空闲块，减少内存碎片。
+
+  
 
 ## 扩展练习Challenge：硬件可用物理内存范围的获取方法
 

@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "RelWithDebInfo/lab3.exe"
+			"path" : "Debug/lab3.exe"
 		},
 		{
-			"path" : "RelWithDebInfo/lab3.pdb"
+			"path" : "Debug/lab3.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -111,10 +111,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /Zi /O2 /Ob1 /DNDEBUG -MD"
-				},
-				{
-					"fragment" : "-std:c11"
+					"fragment" : "/DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -std:c11 -MDd"
 				}
 			],
 			"includes" : 
@@ -217,7 +214,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /Zi /O2 /Ob1 /DNDEBUG -MD",
+				"fragment" : "/DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd",
 				"role" : "flags"
 			},
 			{
