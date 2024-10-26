@@ -337,7 +337,8 @@ static void buddy_init_memmp(struct Page* base,size_t n){
 **二叉树结构存放的空间分配**：如果请求的页面超过512页（刚好需要一个page来存储二叉树结构）则按照`real_need_size*sizeof(uintptr_t)*2/PGSIZE`来计算，如果不足512页则按一页计算
 **潜在问题**：
 确保 `buddy->longest` 被分配和初始化。如果 `base` 不在有效的物理内存范围内，可能导致访问错误。
-`used_buddy_num` 的递增操作必须确保不超出 `multi_buddy` 数组的边界，否则可能导致内存访问违规。
+`used_buddy_num` 的递增操作必须确保不超出 `multi_buddy` 数组的边界，否则可能导致内存访问违规。  
+
 3. **内存分配与释放**
 ```c
 static struct Page *
@@ -451,7 +452,8 @@ buddy_free_pages(struct Page *base, size_t n) {
 
 **潜在问题**：
 释放的页面必须在合法的范围内，若页面不在管理块中，可能导致未定义行为。
-在更新自由链表时，需将释放的页面重新插入链表。若未正确插入，将导致内存泄漏。
+在更新自由链表时，需将释放的页面重新插入链表。若未正确插入，将导致内存泄漏。  
+
 4. **内存状态检查**
 ```c
 static size_t
