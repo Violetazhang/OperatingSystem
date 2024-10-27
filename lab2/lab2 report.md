@@ -304,7 +304,7 @@ static void buddy_init_memmp(struct Page* base,size_t n){
         set_page_ref(p, 0);
     }
     
-    base->property = n; // 从base开始有n个可用页
+    base->property = n;   // 从base开始有n个可用页
     p = base + n; 
 
     buddy.begin_page = base;
@@ -382,10 +382,10 @@ buddy_alloc_pages(size_t n) {
     
     for (page = base_page; page != base_page + real_alloc ; page++)
     {
-        ClearPageProperty(page);// 将每一个取出的块由空闲态改为保留态
+        ClearPageProperty(page);    // 将每一个取出的块由空闲态改为保留态
     }
 
-    base_page->property = real_alloc;  //用n来保存分配的页数，n为2的幂
+    base_page->property = real_alloc;  //使用2的次幂的值来分配，保证buddy_system的逻辑性
     nr_free -= real_alloc;
     return base_page;
 }
