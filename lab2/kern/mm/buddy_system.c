@@ -1,18 +1,20 @@
 #include <pmm.h>
 #include <buddy_system.h>
 
-struct buddy
-{
-    /* data */
-    size_t size;
-    uintptr_t* longest;
-    size_t manage_page_used;
-    size_t free_size;
-    struct Page* begin_page;
-};
 
-struct buddy multi_buddy[MAX_SIZE];
-int used_buddy_num = 0;
+extern free_area_t free_area;
+
+#define free_list (free_area.free_list)
+#define nr_free (free_area.nr_free)
+
+struct Buddy
+{
+    unsigned *longest;
+    struct Page *begin_page;
+    unsigned size;
+
+} buddy;
+
 
 static size_t up_power_of_2(size_t n){
     n |= n >> 1;
@@ -23,168 +25,163 @@ static size_t up_power_of_2(size_t n){
     return n+1;
 }
 
-
-static void buddy_init(){
+static void buddy_init(void)
+{
+    list_init(&free_list);
+    nr_free = 0;
 }
 
-static void buddy_init_memmp(struct Page* base,size_t n){
+static void buddy_init_memmap(struct Page *base, size_t n)
+{
+    //base is a virtual page,indicating the beginning of pages
     assert(n > 0);
-
-    struct buddy* buddy = &(multi_buddy[used_buddy_num++]);
-
     size_t real_need_size = up_power_of_2(n);
 
-    buddy->size = real_need_size;
-    buddy->free_size = real_need_size;
-    buddy->longest = (uintptr_t*)KADDR(page2pa(base));         //开头放二叉树结构
-
-
-    if(n<512){
-        buddy->manage_page_used = 1;
-        buddy->begin_page = base + buddy->manage_page_used;
-
-    } else{
-        buddy->manage_page_used = (real_need_size*sizeof(uintptr_t)*2+PGSIZE - 1)/PGSIZE;
-        buddy->begin_page = base + buddy->manage_page_used;
-
-    }
-    
-    size_t node_size = real_need_size*2;
-
-    for(int i=0;i<2*real_need_size-1;i++){
-        if(IS_POWER_OF_2(i+1)){
-            node_size /= 2;
-        }
-        buddy->longest[i] = node_size;
-    }
-
-    struct Page *p = buddy->begin_page;
-    for (; p != base + n; p++) {
+    struct Page *p = base;
+    for (; p != base + n; p++)
+    {
         assert(PageReserved(p));
-        // 清空当前页框的标志和属性信息，并将页框的引用计数设置为0
         p->flags = p->property = 0;
         set_page_ref(p, 0);
     }
+    
+    base->property = n; // 从base开始有n个可用页
+    p = base + n; 
+
+    buddy.begin_page = base;
+    buddy.longest = (unsigned *)p;
+
+
+    buddy.size = real_need_size;
+
+    unsigned node_size = 2 * real_need_size;
+
+    for (int i = 0; i <2 * real_need_size - 1; ++i)
+    {
+        if (IS_POWER_OF_2(i + 1))
+        {
+            node_size /= 2;
+        }
+        buddy.longest[i] = node_size;
+
+    }
+    nr_free += n;
 }
 
-static struct Page *
-buddy_alloc_pages(size_t n) {
+static struct Page *buddy_alloc_pages(size_t n)
+{
     assert(n > 0);
-
-    struct Page *page = NULL;
-
-    size_t real_apply_size;
-    size_t offset = 0;
-
-    if(!IS_POWER_OF_2(n)){
-        real_apply_size = up_power_of_2(n); 
-    }else{
-        real_apply_size = n;
-    }
-
-    size_t index = 0;
-
-    struct buddy* buddy = NULL;
-    for(int i=0;i<MAX_SIZE;i++){
-        if(multi_buddy[i].longest[index]>= real_apply_size){
-            buddy = &multi_buddy[i];
-            break;
-        }
-    }
+    unsigned index = 0;
     
-    if(!buddy){
+    if (n > nr_free || buddy.longest[index] < n)
+    {
         return NULL;
     }
+    
+    unsigned node_size;
+    unsigned offset = 0;
 
-    int node_size;
-    for(node_size = buddy->size ; node_size!= real_apply_size;node_size/2){
-        if(buddy->longest[LEFT_LEAF(index)] >= real_apply_size){
+    size_t real_alloc = n;
+
+    if (!IS_POWER_OF_2(n))
+    {
+        real_alloc = up_power_of_2(n);
+    }
+    
+    for (node_size = buddy.size; node_size != real_alloc; node_size /= 2)
+    {
+        
+        if (buddy.longest[LEFT_LEAF(index)] >= real_alloc)
             index = LEFT_LEAF(index);
-        }else{
+        else{
             index = RIGHT_LEAF(index);
         }
     }
 
-    buddy->longest[index] = 0;
-    offset = (index+1)*node_size - buddy->size;
+    
+
+    buddy.longest[index] = 0;
+
+    offset = (index + 1) * node_size - buddy.size;
 
     while(index){
         index = PARENT(index);
-        buddy->longest[index] = MAX(buddy->longest[LEFT_LEAF(index)],buddy->longest[RIGHT_LEAF(index)]);
+        buddy.longest[index] = MAX(buddy.longest[LEFT_LEAF(index)],buddy.longest[RIGHT_LEAF(index)]);
     }
 
-    buddy->free_size -= real_apply_size;
-    return buddy->begin_page + offset;
+
+
+    struct Page *base_page = buddy.begin_page + offset;
+    struct Page *page;
+
+    // 将每一个取出的块由空闲态改为保留态
+    for (page = base_page; page != base_page + real_alloc ; page++)
+    {
+        ClearPageProperty(page);
+    }
+
+    base_page->property = real_alloc;  //用n来保存分配的页数，n为2的幂
+    nr_free -= real_alloc;
+    return base_page;
+}
+
+static void buddy_free_pages(struct Page *base, size_t n)
+{
+    assert(n > 0);
+    unsigned node_size, index = 0;
+    unsigned left_longest, right_longest;
     
+    int total_page = n;
+
+    if (!IS_POWER_OF_2(n))
+    {
+        n = up_power_of_2(n);
+    }
+
+    int offset = (base - buddy.begin_page);
+    node_size = 1;
+    index = buddy.size + offset - 1;
+
+    while (node_size != n)
+    {
+        node_size *= 2;
+        index = PARENT(index);
+        if (index == 0)
+            return;
+    }
+
+    buddy.longest[index] = node_size;
+
+
+    while(index){
+        index = PARENT(index);
+        node_size *=2;
+
+        left_longest = buddy.longest[LEFT_LEAF(index)];
+        right_longest = buddy.longest[RIGHT_LEAF(index)];
+
+        if(left_longest + right_longest == node_size){
+            buddy.longest[index] = node_size;
+
+        }else{
+            buddy.longest[index] = MAX(left_longest,right_longest);
+        }
+
+    }
+    
+    nr_free+=n;
+    
+}
+
+static size_t
+buddy_nr_free_pages(void) {
+    return nr_free;
 }
 
 
 static void
-buddy_free_pages(struct Page *base, size_t n) {
+buddy_check(void) {
     
-    assert(n > 0);
-
-    struct buddy* self = NULL;
-    for(int i=0;i<MAX_SIZE;i++){
-        struct buddy* this_buddy = &multi_buddy[i];
-        if(base >= this_buddy->begin_page && base < this_buddy->begin_page + this_buddy->size){
-            self = this_buddy;
-        }
-    }
-
-    if(!self){
-        return;
-    }
-
-
-    size_t node_size = 1;
-    size_t index = 0;
-    size_t left_longest,right_longest;
-
-    size_t offset = base - self->begin_page;
-
-    index = offset + self->size - 1;
-    for(;self->longest[index] ;index = PARENT(index)){
-        node_size *=2;
-        if(index == 0){
-            return;
-        }
-    }
-    
-    self->longest[index] = node_size;
-
-    while(index){
-        index = PARENT(index);
-        node_size *=2;
-
-        left_longest = self->longest[LEFT_LEAF(index)];
-        right_longest = self->longest[RIGHT_LEAF(index)];
-
-        if(left_longest + right_longest == node_size){
-            self->longest[index] = node_size;
-
-        }else{
-            self->longest[index] = MAX(left_longest,right_longest);
-        }
-
-    }
-
-}
-
-
-static size_t
-buddy_nr_free_pages(void) {        //返回剩余的空闲的页数
-    size_t total_free = 0;
-    for(int i=0;i<MAX_SIZE; i++){
-        total_free += multi_buddy[i].free_size;
-    }
-
-    return total_free;
-}
-
-static void buddy_check(){
-
-
     size_t total_page = buddy_nr_free_pages();
     struct Page *p0, *p1, *p2;
     p0 = p1 = p2 = NULL;
@@ -221,15 +218,15 @@ static void buddy_check(){
     
     assert(buddy_nr_free_pages() == total_page );
 
-
+    
 }
 
 const struct pmm_manager buddy_pmm_manager = {
-        .name = "buddy_pmm_manager",
-        .init = buddy_init,
-        .init_memmap = buddy_init_memmp,
-        .alloc_pages = buddy_alloc_pages,
-        .free_pages = buddy_free_pages,
-        .nr_free_pages = buddy_nr_free_pages,
-        .check = buddy_check,
+    .name = "buddy_pmm_manager",
+    .init = buddy_init,
+    .init_memmap = buddy_init_memmap,
+    .alloc_pages = buddy_alloc_pages,
+    .free_pages = buddy_free_pages,
+    .nr_free_pages = buddy_nr_free_pages,
+    .check = buddy_check,
 };
