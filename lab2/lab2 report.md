@@ -271,18 +271,17 @@ Best-Fit 虽然比 First-Fit 更高效地利用了内存，但它可能会导致
 ## 扩展练习Challenge：buddy system（伙伴系统）分配算法
 1. **buddy结构定义**
 ```c
-struct buddy {
-    size_t size;              // 管理块的大小
-    uintptr_t* longest;       // 空闲块的树结构
-    size_t manage_page_used;  // 已使用的管理页面数
-    size_t free_size;         // 可用的空闲大小
-    struct Page* begin_page;  // 起始页面指针
-};
+struct Buddy
+{
+    unsigned *longest;
+    struct Page *begin_page;
+    unsigned size;
+
+} buddy;
 ```
 `size`：该字段存储当前管理块的大小，必须为 2 的幂。错误的大小定义可能导致内存分配时的逻辑错误，在这里我为了方便起见，归化为2的次幂时都采用向上取整的方式。
 `longest`：这个是管理buddy二叉树节点最大空间的链表。
-`manage_page_used`：指二叉树结构占据的空间，在我的设计里，如果请求的页面超过512页（刚好需要一个page来存储二叉树结构）则按照`real_need_size*sizeof(uintptr_t)*2/PGSIZE`来计算，如果不足512页则按一页计算。
-`free_size`：为当前buddy空闲的空间
+`begin_page`:标记页表开始的地址
 1. **初始化函数**
 ```c
 static void buddy_init() {
@@ -295,161 +294,156 @@ static void buddy_init() {
 ```c
 static void buddy_init_memmp(struct Page* base,size_t n){
     assert(n > 0);
-
-    struct buddy* buddy = &(multi_buddy[used_buddy_num++]);
-
     size_t real_need_size = up_power_of_2(n);
 
-    buddy->size = real_need_size;
-    buddy->free_size = real_need_size;
-    buddy->longest = (uintptr_t*)KADDR(page2pa(base));     
-
-    if(n<512){
-        buddy->manage_page_used = 1;
-        buddy->begin_page = base + buddy->manage_page_used;
-
-    } else{
-        buddy->manage_page_used = (real_need_size*sizeof(uintptr_t)*2+PGSIZE - 1)/PGSIZE;
-        buddy->begin_page = base + buddy->manage_page_used;
-
-    }
-    
-    size_t node_size = real_need_size*2;
-
-    for(int i=0;i<2*real_need_size-1;i++){
-        if(IS_POWER_OF_2(i+1)){
-            node_size /= 2;
-        }
-        buddy->longest[i] = node_size;
-    }
-
-    struct Page *p = buddy->begin_page;
-    for (; p != base + n; p ++) {
+    struct Page *p = base;
+    for (; p != base + n; p++)
+    {
         assert(PageReserved(p));
-        // 清空当前页框的标志和属性信息，并将页框的引用计数设置为0
         p->flags = p->property = 0;
         set_page_ref(p, 0);
     }
+    
+    base->property = n; // 从base开始有n个可用页
+    p = base + n; 
+
+    buddy.begin_page = base;
+    buddy.longest = (unsigned *)p;
+
+
+    buddy.size = real_need_size;
+
+    unsigned node_size = 2 * real_need_size;
+
+    for (int i = 0; i <2 * real_need_size - 1; ++i)
+    {
+        if (IS_POWER_OF_2(i + 1))
+        {
+            node_size /= 2;
+        }
+        buddy.longest[i] = node_size;
+
+    }
+    nr_free += n;
 }
 ```
-`buddy_init_memmp`：用于初始化内存映射。`real_need_size` 是通过 `up_power_of_2` 函数计算得到，这个函数会返回n最接近的向上取的2次幂数；
-`(uintptr_t*) KADDR(page2pa(base))`：将物理地址转换为内核虚拟地址，以便在内核代码中访问内存
-**二叉树结构存放的空间分配**：如果请求的页面超过512页（刚好需要一个page来存储二叉树结构）则按照`real_need_size*sizeof(uintptr_t)*2/PGSIZE`来计算，如果不足512页则按一页计算
+`buddy_init_memmp`：用于初始化内存映射。`real_need_size` 是通过 `up_power_of_2` 函数计算得到，这个函数会返回n最接近的向上取的2次幂数；在 `buddy_init_memmap` 中计算所需的块大小，初始化页的 `flags`和 `property` 属性，并分配 `longest` 数组。
+
 **潜在问题**：
-确保 `buddy->longest` 被分配和初始化。如果 `base` 不在有效的物理内存范围内，可能导致访问错误。
-`used_buddy_num` 的递增操作必须确保不超出 `multi_buddy` 数组的边界，否则可能导致内存访问违规。  
+确保 `buddy->longest` 被分配和初始化。如果 `base` 不在有效的物理内存范围内，可能导致访问错误。  
 
 3. **内存分配与释放**
 ```c
 static struct Page *
 buddy_alloc_pages(size_t n) {
-    assert(n > 0);
-
-    size_t real_apply_size;
-    size_t offset = 0;
-
-    if(!IS_POWER_OF_2(n)){
-        real_apply_size = up_power_of_2(n); 
-    }else{
-        real_apply_size = n;
-    }
-
-    size_t index = 0;
-
-    struct buddy* buddy = NULL;
-    for(int i=0;i<MAX_SIZE;i++){
-        if(multi_buddy[i].longest[index]>=n){
-            buddy = &multi_buddy[i];
-            break;
-        }
+     assert(n > 0);
+    unsigned index = 0;
+    
+    if (n > nr_free || buddy.longest[index] < n)
+    {
+        return NULL;
     }
     
-    if(!buddy){
-        return;
-    }
+    unsigned node_size;
+    unsigned offset = 0;
 
-    int node_size;
-    for(node_size = buddy->size ; node_size!= real_apply_size;node_size/2){
-        if(buddy->longest[LEFT_LEAF(index)] >= n){
+    size_t real_alloc = n;
+
+    if (!IS_POWER_OF_2(n))
+    {
+        real_alloc = up_power_of_2(n);
+    }
+    
+    for (node_size = buddy.size; node_size != real_alloc; node_size /= 2)
+    {
+        
+        if (buddy.longest[LEFT_LEAF(index)] >= real_alloc)
             index = LEFT_LEAF(index);
-        }else{
+        else{
             index = RIGHT_LEAF(index);
         }
     }
 
-    buddy->longest[index] = 0;
-    offset = (index+1)*node_size - buddy->size;
+    
+
+    buddy.longest[index] = 0;
+
+    offset = (index + 1) * node_size - buddy.size;
 
     while(index){
         index = PARENT(index);
-        buddy->longest[index] = MAX(buddy->longest[LEFT_LEAF(index)],buddy->longest[RIGHT_LEAF(index)]);
+        buddy.longest[index] = MAX(buddy.longest[LEFT_LEAF(index)],buddy.longest[RIGHT_LEAF(index)]);
     }
 
-    buddy->free_size -= real_apply_size;
-    return buddy->begin_page + offset;
+
+    struct Page *page;
+    struct Page *base_page = buddy.begin_page + offset;
     
+    
+    for (page = base_page; page != base_page + real_alloc ; page++)
+    {
+        ClearPageProperty(page);// 将每一个取出的块由空闲态改为保留态
+    }
+
+    base_page->property = real_alloc;  //用n来保存分配的页数，n为2的幂
+    nr_free -= real_alloc;
+    return base_page;
 }
 ```
-`buddy_alloc_pages`：根据请求的页面数量，计算实际分配的页面数
+`buddy_alloc_pages`：根据请求的页面数量，计算实际分配的页面数,选择满足请求的块。分配后更新 longest 数组的状态
 `real_apply_size`:请求页面的向上取整函数，为了提供足够的页面。
-第一个for循环在所有的二叉树中寻找足够大剩余空间的二叉树，如果没有这样的二叉树，buddy保持为空，则会直接返回
-潜在问题：
-在处理 `node_size` 时，需确保更新正确。在循环 `for(node_size = buddy->size; node_size != real_apply_size; node_size /= 2) `中，`node_size`的变化需在每次迭代后正确应用。若未能有效更新，可能导致死循环或逻辑错误。
-需要注意在查找 `buddy` 时，如果所有的 `multi_buddy` 都未能满足请求，将返回 `NULL`。对此情况的处理必须仔细设计，避免后续操作中出现空指针访问。
+
 ```c
 static void
 buddy_free_pages(struct Page *base, size_t n) {
     
     assert(n > 0);
-
-    struct buddy* self = NULL;
-    for(int i=0;i<MAX_SIZE;i++){
-        struct buddy* this_buddy = &multi_buddy[i];
-        if(base >= this_buddy->begin_page && base < this_buddy->begin_page + this_buddy->size){
-            self = this_buddy;
-        }
-    }
-
-    if(!self){
-        return;
-    }
-    size_t node_size = 1;
-    size_t index = 0;
-    size_t left_longest,right_longest;
-
-    size_t offset = base - self->begin_page;
-
-    index = offset + self->size - 1;
-    for(;self->longest[index] ;index = PARENT(index)){
-        node_size *=2;
-        if(index == 0){
-            return;
-        }
-    }
+    unsigned node_size, index = 0;
+    unsigned left_longest, right_longest;
     
-    self->longest[index] = node_size;
+    int total_page = n;
+
+    if (!IS_POWER_OF_2(n))
+    {
+        n = up_power_of_2(n);
+    }
+
+    int offset = (base - buddy.begin_page);
+    node_size = 1;
+    index = buddy.size + offset - 1;
+
+    while (node_size != n)
+    {
+        node_size *= 2;
+        index = PARENT(index);
+        if (index == 0)
+            return;
+    }
+
+    buddy.longest[index] = node_size;
+
 
     while(index){
         index = PARENT(index);
         node_size *=2;
 
-        left_longest = self->longest[LEFT_LEAF(index)];
-        right_longest = self->longest[RIGHT_LEAF(index)];
+        left_longest = buddy.longest[LEFT_LEAF(index)];
+        right_longest = buddy.longest[RIGHT_LEAF(index)];
 
         if(left_longest + right_longest == node_size){
-            self->longest[index] = node_size;
+            buddy.longest[index] = node_size;
 
         }else{
-            self->longest[index] = MAX(left_longest,right_longest);
+            buddy.longest[index] = MAX(left_longest,right_longest);
         }
 
     }
-
+    
+    nr_free+=n;
 }
 ```
-`buddy_free_pages`：该函数负责释放指定的页面，并更新其状态。关键在于根据释放页面的偏移量找到对应的索引，并更新树状结构。
 回溯父节点的时候，如果两个子节点的大小加起来等于父节点最大值，则说明，两个子节点都是空闲节点，则可以进行合并，更新父节点的空闲大小为最大值；如果不是这样的情况则更新父节点的最大空闲值为子节点中更大的值
-
+这个版块释放并合并相邻的空闲内存块，更新二叉树结构，使系统能够继续分配其他内存块。
 **潜在问题**：
 释放的页面必须在合法的范围内，若页面不在管理块中，可能导致未定义行为。
 在更新自由链表时，需将释放的页面重新插入链表。若未正确插入，将导致内存泄漏。  
@@ -457,18 +451,11 @@ buddy_free_pages(struct Page *base, size_t n) {
 4. **内存状态检查**
 ```c
 static size_t
-buddy_nr_free_pages(void) {        //返回剩余的空闲的页数
-    size_t total_free = 0;
-    for(int i=0;i<MAX_SIZE; i++){
-        total_free += multi_buddy[i].free_size;
-    }
-
-    return total_free;
+buddy_nr_free_pages(void) {        
+    return nr_free;
 }
 ```
-`buddy_nr_free_pages`：返回当前可用的空闲页面数量。在每次调用前重置 `total_free`，以确保统计结果的准确性。  
-
-**潜在问题**：在统计空闲页面时，需确保所有页面的状态已被正确更新，以避免统计不准确。
+返回剩余的空闲的页数
 ```c
 static void buddy_check(){
 
@@ -512,18 +499,11 @@ static void buddy_check(){
 
 ```
 `buddy_check`：用于测试内存的分配与释放，确保系统的正常运行。通过分配和释放页面来验证内存状态。  
-
-**潜在问题**：在检查过程中，必须确保所有分配的页面都被正确释放，未释放的页面将导致最终的空闲页面统计不准确。
-
-#### 潜在问题分析
-1. 内存管理边界：
-在` buddy_init_memmp` 中，`buddy->begin_page` 和 `buddy->free_size` 的计算必须严格控制，以确保不超出实际分配的页面范围，尤其在初始化时必须正确判断页面的边界。
-2. 状态管理不一致：
-页面状态管理不当可能导致页面在释放后仍被标记为使用中，建议在页面释放时增加状态检查与更新。
-3. 循环条件错误：
-在 `buddy_alloc_pages` 中，确保循环条件能够有效更新，避免导致死循环。每次迭代后都要对 `node_size` 进行有效的除以 `2` 操作。
-4. 数据类型一致性：
-在处理指针与整型之间的转换时，确保类型匹配，特别是在物理地址转换中，必须保证转换操作的安全性。
+使用 `alloc_pages` 函数分配内存块，测试分配了不同数量的页面（例如 512 页、1024 页等），并确保页面分配遵循相邻性，检查是否满足二叉树管理结构。
+测试了连续分配情况，确认 `longest` 数组中记录的每个节点的最大块大小是否符合预期。
+测试 `free_pages` 函数，释放不同大小的页面并观察是否成功合并。
+测试了释放并重新分配的情况，通过分配新的内存块，确保内存块能够重新被有效利用。
+验证相邻空闲内存块是否自动合并，从而降低内存碎片率。
 
 ## 扩展练习Challenge：硬件可用物理内存范围的获取方法
 
