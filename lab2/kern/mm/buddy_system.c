@@ -10,8 +10,8 @@ extern free_area_t free_area;
 struct Buddy
 {
     unsigned *longest;
-    struct Page *begin_page;
     unsigned size;
+    struct Page *begin_page;
 
 } buddy;
 
@@ -114,13 +114,13 @@ static struct Page *buddy_alloc_pages(size_t n)
     struct Page *base_page = buddy.begin_page + offset;
     struct Page *page;
 
-    // 将每一个取出的块由空闲态改为保留态
+    
     for (page = base_page; page != base_page + real_alloc ; page++)
     {
-        ClearPageProperty(page);
+        ClearPageProperty(page);        // 将每一个取出的块由空闲态改为保留态
     }
 
-    base_page->property = real_alloc;  //用n来保存分配的页数，n为2的幂
+    base_page->property = real_alloc;  
     nr_free -= real_alloc;
     return base_page;
 }
