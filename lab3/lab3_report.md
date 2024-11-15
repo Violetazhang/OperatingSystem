@@ -402,6 +402,228 @@ RISC的三种页表模式`SV32`、`SV39`和`SV48`都采用多级页表结构，�
 **为何只增加只读接口而不是读写分离**：
 在我的考虑中，OS工作过程中，应该会比较少出现只写但不查询的任务（一般情况下不查询怎么能知道需要分配空间，只分配不查询会导致重复分配的可能），因此分离出一个专门用于分配的借口并不是那么实用
 
+### 练习3：给未被映射的地址映射上物理页（需要编程）
+
+#### 代码分析和设计
+
+`do_pgfault()`的核心功能是实现页面置换中“缺页异常”的处理逻辑，即当某个虚拟地址没有被正确映射时，通过判断虚拟地址的合法性、读写权限，以及是否需要从磁盘换入相应的页面，来确保虚拟地址到物理页面的有效映射。参数`mm`是内存管理结构体，用于描述当前进程的地址空间；`error_code`标识引发缺页错误的原因；`addr`是导致缺页错误的虚拟地址。整个过程包括以下几个步骤：
+
+1. **找到对应的 VMA 区域**：`find_vma` 函数通过 `mm` 结构查找包含 `addr` 的`vma`（虚拟内存区域）。缺页异常发生时，首先需要确认访问的地址是否属于某个合法的范围。若找不到包含 `addr` 的 `vma` 或 `addr` 小于 `vma` 的起始地址 `vm_start`，则说明该地址非法，返回`-E_INVAL`。
+2. **检查权限**：若该地址所在 `vma` 标记中包含写权限 `VM_WRITE`，则设置 `perm` 为用户可读写权限，否则仅设置只读权限。`ROUNDDOWN` 宏用于将 `addr` 对齐到页面边界，因为虚拟地址映射以页面为单位。
+3. **检查页表项**：利用 `get_pte` 获取 `addr` 对应的页表项（PTE）。若页表项为空，说明该地址没有对应的物理页面，需申请新页面，并将其映射到 `addr`。`pgdir_alloc_page` 分配一个新的物理页面并建立到 `addr` 的映射。若失败，返回错误。
+4. **处理换入页面的情况**：如果页表项 `*ptep` 不为 0，可能是一个换出页面的标记，说明该页被置换到了硬盘上。这部分即为需要填写的部分，大概步骤如下：
+   - 将磁盘页面加载到内存：`swap_in` 函数从磁盘中找到与 `addr` 对应的页面，分配一个物理页面存储这些数据，并将页面内容加载到这个物理页面。`page` 是指向该物理页面的指针。
+   - 建立虚拟地址和物理地址的映射：`page_insert` 函数在页表中建立 `addr` 到 `page` 的映射，使得 CPU 在访问 `addr` 时能够通过页表找到相应的物理页面。`mm->pgdir` 是页目录的基地址，表示该进程的页表；同时传入该映射的权限`perm` ，确保后续 CPU 在访问该页面时，权限控制符合设定。
+   - 将页面标记为可换出：`swap_map_swappable` 函数将页面标记为“可换出”（即可以从内存中再次被换出到磁盘）。这一步通常会在系统中建立一个链表，记录当前可换出的页面信息，这样当内存不足时，系统能知道哪些页面可以优先置换到磁盘。
+
+```c
+int do_pgfault(struct mm_struct *mm, uint_t error_code, uintptr_t addr) {
+    int ret = -E_INVAL;
+    //try to find a vma which include addr
+    struct vma_struct *vma = find_vma(mm, addr);
+
+    pgfault_num++;
+    //If the addr is in the range of a mm's vma?
+    if (vma == NULL || vma->vm_start > addr) {
+        cprintf("not valid addr %x, and  can not find it in vma\n", addr);
+        goto failed;
+    }
+
+    uint32_t perm = PTE_U;
+    if (vma->vm_flags & VM_WRITE) {
+        perm |= (PTE_R | PTE_W);
+    }
+    addr = ROUNDDOWN(addr, PGSIZE);
+
+    ret = -E_NO_MEM;
+
+    pte_t *ptep=NULL;
+
+
+    ptep = get_pte(mm->pgdir, addr, 1);  //(1) try to find a pte, if pte's
+                                         //PT(Page Table) isn't existed, then
+                                         //create a PT.
+    if (*ptep == 0) {
+        if (pgdir_alloc_page(mm->pgdir, addr, perm) == NULL) {
+            cprintf("pgdir_alloc_page in do_pgfault failed\n");
+            goto failed;
+        }
+    } else {
+       
+        if (swap_init_ok) {
+            struct Page *page = NULL;
+            swap_in(mm, addr, &page);//(1）According to the mm AND addr, try
+                                     //to load the content of right disk page
+                                     //into the memory which page managed.
+            page_insert(mm->pgdir, page, addr, perm);//(2) According to the mm,
+                                                     //addr AND page, setup the
+                                                     //map of phy addr <---> logical addr
+            swap_map_swappable(mm, addr, page, 1);//(3) make the page swappable.
+            page->pra_vaddr = addr;
+        } else {
+            cprintf("no swap_init_ok but ptep is %x, failed\n", *ptep);
+            goto failed;
+        }
+   }
+
+   ret = 0;
+failed:
+    return ret;
+}
+```
+
+#### 问题解答
+
+> - 请描述页目录项（Page Directory Entry）和页表项（Page Table Entry）中组成部分对ucore实现页替换算法的潜在用处。
+
+- 页目录项（PDE）和页表项（PTE）在页替换算法中的核心作用在于**提供状态信息和访问控制**，从而帮助操作系统高效地管理页面的生命周期，包括页面的访问、置换以及换入换出过程。
+
+- 页目录项和页表项可以提供页面访问记录，辅助页面优先级判断。`Accessed` 位用于记录页面最近是否被访问，CPU 会在每次读取或写入页面时自动设置该位为1。在 LRU、CLOCK 等基于访问频率的替换算法中，通过检查 `Accessed` 位，系统可以判断页面近期是否被访问过，从而将长期未访问的页面选为替换对象。
+
+- 页目录项和页表项可以标记页面是否需要写回，优化换出性能。`Dirty` 位用于标记页面是否被修改过，CPU 在页面写操作时会设置该位为1。在页面换出时，操作系统检查 `Dirty` 位，如果为1，表明页面内容在内存中被修改过，需要写回磁盘；否则可以直接丢弃，减少了 I/O 操作的开销。
+
+- 页表项记录页面在物理内存或磁盘中的地址，页替换算法需要根据页表项找到换出的页面，以及加载换入的页面。在换入时，页表项被更新为新的物理地址，通过`do_pgfault`将某个虚拟地址对应于磁盘的一页内容读入到内存中；换出时则记录该虚拟页在磁盘中的位置，为换入换出提供磁盘位置信息。
+
+  
+
+> - 如果ucore的缺页服务例程在执行过程中访问内存，出现了页访问异常，请问硬件要做哪些事情？
+
+- 保存上下文信息：`PC` 被保存到 `sepc`，触发异常处理程序，跳转到 `stvec` 即 `__alltraps` 处指定的地址，同时通过异常原因寄存器 `scause`标识触发异常的具体原因，异常地址（通过 `tf->badvaddr` 提供该地址）被保存到`trapframe`中。
+
+- 触发异常处理流程：进入异常处理`exception_handler`，根据异常原因进行不同操作。页访问异常具体由`do_pgfault`处理。
+
+- 恢复程序：解决完毕会跳转到`__trapret `恢复保存的寄存器， 并通过 `sret` 跳转回原程序。
+
+  
+
+> - 数据结构Page的全局变量（其实是一个数组）的每一项与页表中的页目录项和页表项有无对应关系？如果有，其对应关系是啥？
+
+`Page` 是一个描述物理页面的结构，页表中的页表项（PTE）以及页目录项（PDE）是用于实现虚拟地址到物理地址的映射关系的数据结构，`Page` 和页目录项和页表项没有直接的一一对应关系，但它们之间有一定的联系。
+
+- 页表项和页目录项用于映射虚拟地址到物理地址，而 ` Page` 中的字段则描述了物理页面的状态、引用计数、是否被访问等信息。
+
+- 在页面替换算法中， ` Page` 中的 `pra_vaddr` 用来跟踪虚拟地址的映射，而 `visited` 和 `ref` 可以帮助管理物理页面的使用情况。
+
+  
+
+### 练习4：补充完成Clock页替换算法（需要编程）
+
+#### 1.  `_clock_init_mm`：初始化页面置换链表
+
+```c
+static int 
+_clock_init_mm(struct mm_struct *mm)
+{      
+     list_init(&pra_list_head);// 初始化pra_list_head为空链表
+     curr_ptr = &pra_list_head;// 初始化当前指针curr_ptr指向pra_list_head，表示当前页面替换位置为链表头
+     mm->sm_priv = &pra_list_head;// 将mm的私有成员指针指向pra_list_head，用于后续的页面替换算法操作
+     //cprintf(" mm->sm_priv %x in fifo_init_mm\n",mm->sm_priv);
+     return 0;
+}
+```
+
+- 这段代码的核心是初始化一个链表 `pra_list_head`，该链表用于管理正在进行页面替换的物理页面，会用来追踪页面的使用顺序。
+- 初始化时，将`curr_ptr` 指向链表的头部，表示页面替换时的当前指针位置。该指针在后续的页面替换过程中会用来指示当前“时钟”的位置。
+- 初始化时，也将 `mm`（内存管理结构体）中的 `sm_priv` 指向 `pra_list_head`。`sm_priv` 在后续的操作中会被用来访问页面替换链表。这个字段的作用是在内存管理的上下文中保存与页面替换相关的数据。
+
+#### 2. `_clock_map_swappable`：将页面插入到置换链表中
+
+```c
+static int 
+_clock_map_swappable(struct mm_struct *mm, uintptr_t addr, struct Page *page, int swap_in)
+{
+    list_entry_t *entry=&(page->pra_page_link);
+ 
+    assert(entry != NULL && curr_ptr != NULL);
+    //record the page access situlation
+ 
+    // link the most recent arrival page at the back of the pra_list_head qeueue.
+    // 将页面page插入到页面链表pra_list_head的末尾
+    list_entry_t *head = (list_entry_t*) mm->sm_priv;
+    list_add(head->prev, entry);
+    // 将页面的visited标志置为1，表示该页面已被访问
+    pte_t *pte =  get_pte(mm->pgdir, addr, 0);
+    *pte |= PTE_A;
+    page->visited = 1;
+
+    curr_ptr = entry;
+    cprintf("curr_ptr %px\n", curr_ptr);
+    return 0;
+}
+```
+
+- `_clock_map_swappable` 将传入的页面插入到 `pra_list_head` 链表的末尾。这是因为，时钟算法中的一个核心思想是记录页面的访问顺序，最先进入链表的页面会在最后进行替换。
+- `pte` 是一个页表项，`PTE_A` 位代表该页面是否被访问过。每次访问该页面时，都将访问位 `PTE_A` 设置为 `1`，表示该页面已被访问。
+- 每次对页面进行操作时，`curr_ptr` 都会更新为当前处理的页面。`curr_ptr` 表示当前页面替换的候选位置，它指向链表中当前页面的位置。这样，在替换时，可以根据 `curr_ptr` 的位置选择下一个替换的页面。
+
+####3.  `_clock_swap_out_victim`：选择替换页面
+
+```c
+static int 
+_clock_swap_out_victim(struct mm_struct *mm, struct Page ** ptr_page, int in_tick)
+{
+     list_entry_t *head=(list_entry_t*) mm->sm_priv;
+         assert(head != NULL);
+     assert(in_tick==0);
+     /* Select the victim */
+     //(1)  unlink the  earliest arrival page in front of pra_list_head qeueue
+     //(2)  set the addr of addr of this page to ptr_page
+    while (1) {
+        // 遍历页面链表pra_list_head，查找最早未被访问的页面
+        if(list_next(curr_ptr) == head)
+            curr_ptr = head->next;
+        else
+            curr_ptr = list_next(curr_ptr);
+        // 获取当前页面对应的Page结构指针
+        struct Page *page = le2page(curr_ptr, pra_page_link);
+        // 如果当前页面未被访问，则将该页面从页面链表中删除，并将该页面指针赋值给ptr_page作为换出页面
+        
+        if(!page->visited)
+        { 
+            list_del(curr_ptr);
+            *ptr_page = page;
+            break;       
+        }
+        // 如果当前页面已被访问，则将visited标志置为0，表示该页面已被重新访问
+        else
+        {
+            pte_t *pte = get_pte(mm->pgdir, page->pra_vaddr, 0);
+            *pte &= ~PTE_A;
+            page->visited = 0; 
+        }
+    }
+    return 0;
+}
+```
+
+- 该函数用于从链表 `pra_list_head` 中选择一个“victim”页面进行换出。`curr_ptr` 作为当前指针，指向链表中的一个页面，时钟算法的工作方式是顺序遍历链表，检查页面是否被访问。
+- 每次遍历时，如果页面已经被访问（即 `visited == 1`），就将其访问标志清零，表示该页面在当前循环中重新被访问。如果页面没有被访问过（`visited == 0`），则选定该页面作为换出页面，并从链表中删除。
+- 当一个页面被选定为 victim  时，它会被从链表中删除，并且该页面的 `Page` 结构会通过 `*ptr_page` 返回给调用者，用于后续的页面换入操作。
+
+
+
+#### 问题解答
+
+> - 比较Clock页替换算法和FIFO算法的不同。
+
+以下是这两种算法的详细比较：
+
+| 特性             | **FIFO 算法**                         | **Clock 算法**                          |
+| ---------------- | ------------------------------------- | --------------------------------------- |
+| **算法类型**     | 基于时间顺序的替换策略                | 基于页面访问情况的改进型替换策略        |
+| **队列结构**     | 使用普通的链表（先进先出）            | 环形链表（类似时钟）                    |
+| **页面访问情况** | 不考虑页面是否被访问过                | 通过访问位标记页面是否被访问过          |
+| **页面替换策略** | 替换最先进入内存的页面                | 替换最近未被访问的页面                  |
+| **性能**         | 易于实现，但可能产生 Belady's Anomaly | 相较于 FIFO，更能适应不同的页面访问模式 |
+| **资源开销**     | 没有额外的标志位和检查                | 需要维护访问位，稍微增加了开销          |
+| **复杂度**       | 简单，易于实现                        | 稍复杂，但比 LRU 简单                   |
+| **适应性**       | 不适应不同访问模式，容易造成低效      | 对访问模式有更好的适应性，效率更高      |
+| **替换选择**     | 只考虑进入内存的顺序，不考虑使用频率  | 根据页面访问情况动态选择被替换页面      |
+
+Clock 算法是 FIFO 的改进版本，它通过引入访问位来实现页面替换，最先找到的`PTE_A`标志位为0的页，如果链表上所有页都为1，Clock并不会置换任何页，而是进行第二遍扫描。
+
+
+
 ### 练习5：阅读代码和实现手册，理解页表映射方式相关知识（思考题）
 
 #### 多级页表模式优点
