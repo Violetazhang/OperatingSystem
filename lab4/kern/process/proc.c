@@ -292,12 +292,32 @@ do_fork(uint32_t clone_flags, uintptr_t stack, struct trapframe *tf) {
      */
 
     //    1. call alloc_proc to allocate a proc_struct
+    proc = alloc_proc();
+    if (proc == NULL) // 如果分配失败，返回错误码
+    { 
+        goto fork_out;
+    }
     //    2. call setup_kstack to allocate a kernel stack for child process
+    if (setup_kstack(proc))
+    {
+        goto bad_fork_cleanup_proc; // 释放刚刚alloc的proc_struct
+    }
     //    3. call copy_mm to dup OR share mm according clone_flag
+    if (copy_mm(clone_flags, proc))
+    {
+        goto bad_fork_cleanup_kstack;  // 释放刚刚setup的kstack
+    }
     //    4. call copy_thread to setup tf & context in proc_struct
+    copy_thread(proc, stack, tf);
     //    5. insert proc_struct into hash_list && proc_list
+    proc->pid = get_pid();  // 为子进程分配pid
+    hash_proc(proc);    // 将子进程添加到hash_list中
+    list_add(&proc_list, &(proc->list_link));   // 将子进程添加到proc_list中
+    nr_process++;
     //    6. call wakeup_proc to make the new child process RUNNABLE
+    wakeup_proc(proc);
     //    7. set ret vaule using child proc's pid
+    ret = proc->pid;
 
     
 
