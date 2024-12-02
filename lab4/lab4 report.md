@@ -1,3 +1,196 @@
+### 练习1：分配并初始化一个进程控制块（需要编码）
+```c
+proc->state = PROC_UNINIT;
+proc->pid = -1;
+proc->runs = 0;
+proc->kstack = 0;
+proc->need_resched = 0;
+proc->parent = NULL;
+proc->mm = NULL;
+memset(&(proc->context),0,sizeof(proc->context));
+proc->tf = NULL;
+proc->cr3 = boot_cr3;
+proc->flags = 0;
+memset(proc->name,0,PROC_NAME_LEN);
+```
+* state:进程所处状态，通过这个字段，系统能够判断进程是否处于可以运行、等待资源或执行某些任务的状态，由于这个函数完成的是初始化任务因此将这个字段设置成`PROC_UNINIT`，表示处于初始化状态,该字段的其他枚举结果：
+  ```c
+  enum proc_state {
+    PROC_UNINIT = 0,  // uninitialized
+    PROC_SLEEPING,    // sleeping
+    PROC_RUNNABLE,    // runnable(maybe running)
+    PROC_ZOMBIE,      // almost dead, and wait parent proc to reclaim his resource
+    }
+  ```
+* pid:这个字段保存进程的标识符，通常称为进程ID（PID）。每个进程在系统中都有一个唯一的PID，用于标识和管理该进程，因为是初始化状态，设置成一个无效值-1标识
+* runs:字段记录进程运行的次数，初始化过程自然而然地设置为0
+* kstack:这个字段保存进程的内核栈的地址，初始化状态这个信息未知，直接设置为0，表示成一个最原始的地址
+* need_resched:这个字段表示该进程是否需要被重新调度，初始化阶段这个字段也将其初始化为0，表示当前不需要被重新调度
+* parent:这个字段是指向父进程的指针，每个进程通常会有一个父进程，父进程负责创建和管理它的子进程，这个字段用于进程之间的关系追踪；初始化进程块不关心进程的父进程是谁，因此这个字段设置成NULL
+* mm:这个字段指向进程的内存管理结构，如前面lab3，lab4中应用的伙伴系统等，但初始化进程对于这个信息不可知，也暂时不需要关心，因此也设置成NULL
+* context:这个字段保存进程的上下文信息，进程调度时，操作系统通过保存和恢复上下文来实现进程的切换，初始化不关心上下文内容，但为了防止杂乱的原始信息干扰，将这个字段所占的空间全部刷0
+* tf:字段保存进程的陷阱帧，触发中断异常时调用以保存寄存器状态，初始化阶段无法分配，因此也设置为NULL
+* cr3:这个字段保存CR3寄存器的值，CR3是x86架构下用于指示当前进程的页目录表（PDT）基地址的寄存器，每个进程在x86系统上都有自己的页目录表，用于虚拟内存的映射，mm里有个很重要的项`pgdir`，记录的是该进程使用的一级页表的物理地址，但是在初始化阶段mm被定义为NULL，因此需要一个值来替代pgdir，`boot_cr3`指向了ucore启动时建立好的内核虚拟空间的页目录表首地址（在`pmm_init()`中初始化`boot_cr3`使之指向了ucore内核虚拟空间的页目录表首地址，即一级页表的起始物理地址），cr3字段存在的意义之一是避免每次都根据mm来计算cr3
+![](1.png)
+* flags:这个字段保存进程的标志位。进程的标志位用于表示一些特殊的属性或状态，例如是否处于可中断状态、是否已经执行过某些操作等
+* name:这个字段保存进程的名称，PROC_NAME_LEN是一个常量，指定了名称的最大长度，用于表示进程的标识符或描述符，通常在调试或查看进程状态时有很好的辅助作用，由于初始化位未知进程名字，这个字段全部空间刷0
+##### 请说明proc_struct中`struct context context`和`struct trapframe *tf`成员变量含义和在本实验中的作用是啥？（提示通过看代码和编程调试可以判断出来）
+###### struct context context
+这个变量保存进程上下文内容，用于进程切换，在内核中进程是相对独立的。使用context保存寄存器状态可以使进程独立地进行上下文切换，实际使用这个变量进行上下文切换的函数时`kern/process/switch.S`中定义的`switch_to`：
+![](2.png)
+###### struct trapframe *tf
+tf是是一个中断帧的指针，总是指向内核栈的某个位置，当进程从用户空间跳到内核空间时，中断帧记录了**进程在被中断前的状态**。当内核需要跳回用户空间时，需要调整中断帧以恢复让进程继续执行的各寄存器值。除此之外，ucore 内核允许嵌套中断。因此为了保证嵌套中断发生时tf总是能够指向当前的`trapframe`,ucore 在内核桟上维护了 tf 的链;
+下面是在trap处理时对于这个变量的具体应用：
+```c
+/* *lab4\kern\trap\trap.c
+ * trap - handles or dispatches an exception/interrupt. if and when trap()
+ * returns,
+ * the code in kern/trap/trapentry.S restores the old CPU state saved in the
+ * trapframe and then uses the iret instruction to return from the exception.
+ * */
+void trap(struct trapframe *tf) {
+    // dispatch based on what type of trap occurred
+    if ((intptr_t)tf->cause < 0) {
+        // interrupts
+        interrupt_handler(tf);
+    } else {
+        // exceptions
+        exception_handler(tf);
+    }
+}
+```
+`tf->cause`表示触发陷阱的原因:
+* 如果tf->cause为负值，表示这次陷阱是由**中断**引发的。
+* 如果tf->cause为非负值，表示这次陷阱是由**异常**引发的。
+
+*中断处理：*
+```c
+void interrupt_handler(struct trapframe *tf) {
+    intptr_t cause = (tf->cause << 1) >> 1;     //为了实现处理cause的时候保留它的符号信息，确保当它是负数时，符号扩展后结果不会改变，确保负数在经过左移和右移操作后仍然保留其符号
+    switch (cause) {
+        case IRQ_U_SOFT:
+            cprintf("User software interrupt\n");
+            break;
+        case IRQ_S_SOFT:
+            cprintf("Supervisor software interrupt\n");
+            break;
+        case IRQ_H_SOFT:
+            cprintf("Hypervisor software interrupt\n");
+            break;
+        case IRQ_M_SOFT:
+            cprintf("Machine software interrupt\n");
+            break;
+        case IRQ_U_TIMER:
+            cprintf("User software interrupt\n");
+            break;
+        case IRQ_S_TIMER:
+            // "All bits besides SSIP and USIP in the sip register are
+            // read-only." -- privileged spec1.9.1, 4.1.4, p59
+            // In fact, Call sbi_set_timer will clear STIP, or you can clear it
+            // directly.
+            // clear_csr(sip, SIP_STIP);
+            clock_set_next_event();
+            if (++ticks % TICK_NUM == 0) {
+                print_ticks();
+            }
+            break;
+        case IRQ_H_TIMER:
+            cprintf("Hypervisor software interrupt\n");
+            break;
+        case IRQ_M_TIMER:
+            cprintf("Machine software interrupt\n");
+            break;
+        case IRQ_U_EXT:
+            cprintf("User software interrupt\n");
+            break;
+        case IRQ_S_EXT:
+            cprintf("Supervisor external interrupt\n");
+            break;
+        case IRQ_H_EXT:
+            cprintf("Hypervisor software interrupt\n");
+            break;
+        case IRQ_M_EXT:
+            cprintf("Machine software interrupt\n");
+            break;
+        default:
+            print_trapframe(tf);
+            break;
+    }
+}
+```
+*异常处理：*
+```c
+void exception_handler(struct trapframe *tf) {
+    int ret;
+    switch (tf->cause) {
+        case CAUSE_MISALIGNED_FETCH:
+            cprintf("Instruction address misaligned\n");
+            break;
+        case CAUSE_FETCH_ACCESS:
+            cprintf("Instruction access fault\n");
+            break;
+        case CAUSE_ILLEGAL_INSTRUCTION:
+            cprintf("Illegal instruction\n");
+            break;
+        case CAUSE_BREAKPOINT:
+            cprintf("Breakpoint\n");
+            break;
+        case CAUSE_MISALIGNED_LOAD:
+            cprintf("Load address misaligned\n");
+            break;
+        case CAUSE_LOAD_ACCESS:
+            cprintf("Load access fault\n");
+            if ((ret = pgfault_handler(tf)) != 0) {
+                print_trapframe(tf);
+                panic("handle pgfault failed. %e\n", ret);
+            }
+            break;
+        case CAUSE_MISALIGNED_STORE:
+            cprintf("AMO address misaligned\n");
+            break;
+        case CAUSE_STORE_ACCESS:
+            cprintf("Store/AMO access fault\n");
+            if ((ret = pgfault_handler(tf)) != 0) {
+                print_trapframe(tf);
+                panic("handle pgfault failed. %e\n", ret);
+            }
+            break;
+        case CAUSE_USER_ECALL:
+            cprintf("Environment call from U-mode\n");
+            break;
+        case CAUSE_SUPERVISOR_ECALL:
+            cprintf("Environment call from S-mode\n");
+            break;
+        case CAUSE_HYPERVISOR_ECALL:
+            cprintf("Environment call from H-mode\n");
+            break;
+        case CAUSE_MACHINE_ECALL:
+            cprintf("Environment call from M-mode\n");
+            break;
+        case CAUSE_FETCH_PAGE_FAULT:
+            cprintf("Instruction page fault\n");
+            break;
+        case CAUSE_LOAD_PAGE_FAULT:
+            cprintf("Load page fault\n");
+            if ((ret = pgfault_handler(tf)) != 0) {
+                print_trapframe(tf);
+                panic("handle pgfault failed. %e\n", ret);
+            }
+            break;
+        case CAUSE_STORE_PAGE_FAULT:
+            cprintf("Store/AMO page fault\n");
+            if ((ret = pgfault_handler(tf)) != 0) {
+                print_trapframe(tf);
+                panic("handle pgfault failed. %e\n", ret);
+            }
+            break;
+        default:
+            print_trapframe(tf);
+            break;
+    }
+}
+```
+根据tf保留的信息，对不同类型的异常进行处理，并输出日志内容
 ### 练习3：编写`proc_run` 函数（需要编码）
 
 `proc_run`函数的作用是将指定的进程切换到CPU上运行。其代码如下所示：
