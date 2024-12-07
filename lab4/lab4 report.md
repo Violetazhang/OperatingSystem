@@ -1,4 +1,7 @@
+# Lab 4：进程管理
+
 ### 练习1：分配并初始化一个进程控制块（需要编码）
+
 ```c
 proc->state = PROC_UNINIT;
 proc->pid = -1;
@@ -191,6 +194,112 @@ void exception_handler(struct trapframe *tf) {
 }
 ```
 根据tf保留的信息，对不同类型的异常进行处理，并输出日志内容
+
+### 练习2：为新创建的内核线程分配资源（需要编码）
+
+`do_fork` 函数用于实现进程的**创建**，即从父进程派生出一个子进程。它根据传入的参数来指导子进程的创建方式，并设置子进程的内核堆栈、内存空间以及运行状态。它类似于 Unix 系统中的 `fork` 调用，但增加了一些额外的灵活性，例如可以选择共享或复制内存空间。
+
+#### 代码解析
+
+##### 1. 分配并初始化进程控制块（`alloc_proc`函数）
+
+```c
+proc = alloc_proc();
+if (proc == NULL) {
+    goto fork_out;
+}
+```
+
+- 调用 `alloc_proc` 创建一个新的 `proc_struct`（进程控制块），如果分配失败，返回错误码 `-E_NO_MEM`。
+
+##### 2. 分配并初始化内核栈（`setup_stack`函数）
+
+```c
+if (setup_kstack(proc)) {
+    goto bad_fork_cleanup_proc;
+}
+```
+
+- `setup_kstack` 为子进程分配一块内核堆栈。如果失败，跳转到 `bad_fork_cleanup_proc` 进行错误处理，释放已分配的 `proc_struct`。
+
+##### 3. 内存空间复制或共享
+
+```c
+if (copy_mm(clone_flags, proc)) {
+    goto bad_fork_cleanup_kstack;
+}
+```
+
+- `copy_mm` 根据 `clone_flags` 复制或共享父进程的内存空间：
+  - 如果 `clone_flags & CLONE_VM` 为真，则共享内存空间。
+  - 否则，为子进程创建独立的内存副本。
+- 失败时，释放子进程的内核堆栈。
+
+##### 4. 设置进程的中断帧和上下文（`copy_thread`函数）
+
+```c
+copy_thread(proc, stack, tf);
+```
+
+- `copy_thread` 将父进程的 `trapframe` 复制到子进程，并设置子进程的内核入口点和栈指针。
+- 如果 `stack` 非零，则将其作为子进程的用户栈指针。
+
+##### 5. 把设置好的进程加入链表
+
+```c
+proc->pid = get_pid();
+hash_proc(proc);
+list_add(&proc_list, &(proc->list_link));
+nr_process++;
+```
+
+- 为子进程分配唯一的 `pid`。
+- 将子进程插入两个全局结构：
+  - `hash_list`：用于快速查找进程。
+  - `proc_list`：存储所有进程的链表。
+- 增加全局进程计数 `nr_process`。
+
+##### 6. 将新建的进程设为就绪态
+
+```c
+wakeup_proc(proc);
+```
+
+- 将子进程的状态设置为 `PROC_RUNNABLE`，使其可以被调度运行。
+
+##### 7. 返回新进程号
+
+```c
+ret = proc->pid;
+```
+
+- 将函数返回值设为子进程的 `pid`。
+
+#### 错误处理
+
+在子进程创建的各个阶段，如果出现错误，函数会按顺序清理已分配的资源：
+
+- **释放内核堆栈**：
+  ```c
+  bad_fork_cleanup_kstack:
+      put_kstack(proc);
+  ```
+
+- **释放进程控制块**：
+  
+  ```c
+  bad_fork_cleanup_proc:
+      kfree(proc);
+  ```
+
+#### 问题解答
+
+> 请说明ucore是否做到给每个新fork的线程一个唯一的id？请说明你的分析和理由。
+
+ucore使用的`get_pid` 函数就是为每个新创建的进程分配一个唯一的进程号。函数通过`last_pid`记录上一次分配的进程号，用`next_safe`表示目前可以安全分配的最大进程号。每次分配 pid 时，都会遍历全局进程链表 `proc_list`，确保 `last_pid` 未被任何现有进程占用，如果冲突则递增 `last_pid`，并重复检查。如果当前 `last_pid` 超过或等于 `next_safe`，则重新检查所有现存的进程，然后更新 `next_safe`，指向当前已分配的进程号中的最小未使用值。
+
+
+
 ### 练习3：编写`proc_run` 函数（需要编码）
 
 `proc_run`函数的作用是将指定的进程切换到CPU上运行。其代码如下所示：
