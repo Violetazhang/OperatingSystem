@@ -532,7 +532,7 @@ kernel_execve -> ebreak -> syscall -> sys_exec -> do_execve -> do_exit
 
 ![](1.png)
 ### 执行：make grade。如果所显示的应用程序检测都输出ok，则基本正确。（使用的是qemu-1.0.1）
-
+![](2.png)
 #### 扩展练习 Challenge
 
 > 实现 Copy on Write （COW）机制
