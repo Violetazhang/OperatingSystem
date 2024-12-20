@@ -434,7 +434,22 @@ do_pgfault(struct mm_struct *mm, uint_t error_code, uintptr_t addr) {
             cprintf("pgdir_alloc_page in do_pgfault failed\n");
             goto failed;
         }
-    } else {
+    } 
+    // 检测写入无效页面（COW 页）
+    else if((*ptep & PTE_V) && (error_code == 0xf)) {
+        struct Page *page = pte2page(*ptep);
+        if(page_ref(page) == 1) {
+            // 单一引用，直接修改权限
+            page_insert(mm->pgdir, page, addr, perm);
+        }
+        else {
+            // 多个引用，复制页面
+            struct Page *npage = alloc_page();
+            assert(npage != NULL);
+            memcpy(page2kva(npage), page2kva(page), PGSIZE);
+        }
+    }
+    else {
         /*LAB3 EXERCISE 3: YOUR CODE
         * 请你根据以下信息提示，补充函数
         * 现在我们认为pte是一个交换条目，那我们应该从磁盘加载数据并放到带有phy addr的页面，

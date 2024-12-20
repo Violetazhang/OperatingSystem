@@ -388,10 +388,20 @@ int copy_range(pde_t *to, pde_t *from, uintptr_t start, uintptr_t end,
              * (3) memory copy from src_kvaddr to dst_kvaddr, size is PGSIZE
              * (4) build the map of phy addr of  nage with the linear addr start
              */
-            void *src_kvaddr = page2kva(page); // 找出page的内核虚拟地址
-            void *dst_kvaddr = page2kva(npage); // 找出npage的内核虚拟地址
-            memcpy(dst_kvaddr, src_kvaddr, PGSIZE); // 从src_kvaddr到dst_kvaddr进行内存拷贝，大小为PGSIZE
-            ret = page_insert(to, npage, start, perm); // 建立npage的物理地址和线性地址start的映射
+            if(share){
+                // COW共享，设置为只读
+                page_insert(from, page, start, perm & (~PTE_W));
+                ret = page_insert(to, page, start, perm & (~PTE_W));
+            }
+            else{
+                // 分配一个新的页面
+                struct Page *npage = alloc_page();
+                assert(npage != NULL);
+                void *src_kvaddr = page2kva(page); // 找出page的内核虚拟地址
+                void *dst_kvaddr = page2kva(npage); // 找出npage的内核虚拟地址
+                memcpy(dst_kvaddr, src_kvaddr, PGSIZE); // 从src_kvaddr到dst_kvaddr进行内存拷贝，大小为PGSIZE
+                ret = page_insert(to, npage, start, perm); // 建立npage的物理地址和线性地址start的映射
+            }
 
             assert(ret == 0);
         }
